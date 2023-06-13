@@ -20,16 +20,17 @@ function App() {
     setInputValue("");
   };
 
-  const changeRoom = (selectedRoom) => {
-    setRoom(selectedRoom);
-    socket.emit("joinRoom", selectedRoom);
-    console.log(room);
+  const changeRoom = (event) => {
+    event.preventDefault();
+    setRoom(event.target.value);
+    socket.emit("joinRoom", event.target.value);
+    console.log(event.target.value);
   };
 
   return (
     <div>
       <h1>Socket.io Chat</h1>
-      <select onChange={(event) => changeRoom(event.target.value)} value={room}>
+      <select onChange={changeRoom} value={room}>
         <option value="first">first</option>
         <option value="second">second</option>
         <option value="third">third</option>
