@@ -6,7 +6,7 @@ const cors = require("cors");
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors());
 
 app.use(express.static("client/build"));
 
@@ -18,9 +18,22 @@ io.on("connection", (socket) => {
     io.emit("message", "connected");
   });
 
+  socket.on("joinRoom", (room) => {
+    socket.join(room);
+    console.log("joined room: ", room);
+    socket.emit("message", {
+      user: "adminX",
+      text: `hello, Welcome to the ${room} room.`,
+    });
+    socket.broadcast.to(room).emit("message", {
+      user: "adminX",
+      text: `${socket.id} has joined!`,
+    });
+  });
+
   socket.on("message", (message) => {
     console.log(`Received message: ${message}`);
-    io.emit("message", "message");
+    io.emit("message", message);
   });
 });
 
